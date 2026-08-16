@@ -48,14 +48,19 @@ jobs:
 
       - name: Deploy to Cloud Server
         uses: appleboy/ssh-action@v1.0.3
+        env:
+          REPO_NAME: ${{ steps.repo.outputs.NAME }}
+          IMAGE_TAG: ${{ github.sha }}
+          GH_ACTOR: ${{ github.actor }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          envs: REPO_NAME, IMAGE_TAG, GH_ACTOR, GH_TOKEN
           script: |
-            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-            IMAGE_LOWER=${GITHUB_REPOSITORY,,}
-            docker pull ${{ env.REGISTRY }}/$IMAGE_LOWER:${{ github.sha }}
+            echo "$GH_TOKEN" | docker login ghcr.io -u $GH_ACTOR --password-stdin
+            docker pull ghcr.io/$REPO_NAME:$IMAGE_TAG
             docker stop kora-api || true
             docker rm kora-api || true
-            docker run -d --name kora-api -p 80:3000 -e PORT=3000 --restart unless-stopped ${{ env.REGISTRY }}/$IMAGE_LOWER:${{ github.sha }}
+            docker run -d --name kora-api -p 80:3000 -e PORT=3000 --restart unless-stopped ghcr.io/$REPO_NAME:$IMAGE_TAG
