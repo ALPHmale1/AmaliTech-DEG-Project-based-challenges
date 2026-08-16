@@ -1,32 +1,26 @@
-variable "aws_region" {
-  description = "AWS region to deploy all resources into."
+variable "gcp_project_id" {
   type        = string
+  description = "Google Cloud Project ID"
 }
 
-variable "vpc_cidr" {
-  description = "CIDR block for the VPC."
+variable "gcp_region" {
   type        = string
-  default     = "10.0.0.0/16"
+  description = "GCP region"
+  default     = "us-central1"
 }
 
-variable "allowed_ssh_cidr" {
-  description = "Your IP address in CIDR notation allowed to SSH into the EC2 instance (e.g. 203.0.113.5/32)."
+variable "gcp_zone" {
   type        = string
+  description = "GCP zone"
+  default     = "us-central1-a"
 }
 
-variable "db_username" {
-  description = "Master username for the RDS instance."
+variable "admin_ip" {
   type        = string
-  sensitive   = true
+  description = "Restricted administrator IP for SSH"
 }
 
-variable "db_password" {
-  description = "Master password for the RDS instance."
+variable "gcs_bucket_name" {
   type        = string
-  sensitive   = true
-}
-
-variable "s3_bucket_name" {
-  description = "Globally unique name for the S3 static assets bucket."
-  type        = string
+  description = "Globally unique Cloud Storage bucket name"
 }

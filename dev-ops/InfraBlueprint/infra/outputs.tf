@@ -1,16 +1,14 @@
-# Add your outputs here after creating the resources.
+output "instance_public_ip" {
+  description = "Public IP of the Compute Engine instance"
+  value       = google_compute_instance.web.network_interface[0].access_config[0].nat_ip
+}
 
-# output "ec2_public_ip" {
-#   description = "Public IP address of the EC2 instance."
-#   value       = aws_instance.web.public_ip
-# }
+output "database_connection_name" {
+  description = "Cloud SQL database instance connection name"
+  value       = google_sql_database_instance.postgres.connection_name
+}
 
-# output "rds_endpoint" {
-#   description = "Connection endpoint for the RDS instance."
-#   value       = aws_db_instance.main.endpoint
-# }
-
-# output "s3_bucket_name" {
-#   description = "Name of the S3 static assets bucket."
-#   value       = aws_s3_bucket.assets.bucket
-# }
+output "gcs_bucket_name" {
+  description = "Cloud Storage static asset bucket name"
+  value       = google_storage_bucket.assets.name
+}
