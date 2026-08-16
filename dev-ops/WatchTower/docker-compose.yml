@@ -1,0 +1,87 @@
+networks:
+  watchtower-net:
+    driver: bridge
+
+services:
+  order-service:
+    build: ./app/order-service
+    ports:
+      - "${ORDER_SERVICE_PORT}:3001"
+    networks:
+      - watchtower-net
+    environment:
+      - PORT=3001
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  tracking-service:
+    build: ./app/tracking-service
+    ports:
+      - "${TRACKING_SERVICE_PORT}:3002"
+    networks:
+      - watchtower-net
+    environment:
+      - PORT=3002
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  notification-service:
+    build: ./app/notification-service
+    ports:
+      - "${NOTIFICATION_SERVICE_PORT}:3003"
+    networks:
+      - watchtower-net
+    environment:
+      - PORT=3003
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  prometheus:
+    image: prom/prometheus:v2.48.0
+    container_name: prometheus
+    ports:
+      - "${PROMETHEUS_PORT}:9090"
+    volumes:
+      - ./prometheus:/etc/prometheus
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+    networks:
+      - watchtower-net
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  grafana:
+    image: grafana/grafana:10.2.2
+    container_name: grafana
+    ports:
+      - "${GRAFANA_PORT}:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
+    networks:
+      - watchtower-net
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  prometheus_data:
