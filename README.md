@@ -1,40 +1,47 @@
 # AmaliTech DEG — DevOps Project-Based Challenges Portfolio
 
-## Repository Overview
+This repository contains the completed engineering challenges for the AmaliTech DEG Program, focusing on the **DevOps Engineering Track**. 
 
-This repository houses the professional DevOps engineering challenges completed for the AmaliTech DEG Program. The portfolio demonstrates competence in **Infrastructure as Code (IaC)**, cloud automation, multi-tier network security design, and containerized **Observability & Monitoring**.
-
----
-
-## Portfolio Directory & Navigation
-
-The repository is structured into isolated professional projects. Detailed architecture, execution workflows, and validation guides for each challenge reside within their respective subdirectories:
-
-### 1. InfraBlueprint (Terraform GCP Infrastructure as Code)
-* **Path:** [`dev-ops/InfraBlueprint/`](./dev-ops/InfraBlueprint/)
-* **Client / Scenario:** Vela Payments — High-security fintech payment processing infrastructure.
-* **Core Technical Scope:**
-  * Complete migration of manual cloud assets into a reproducible Terraform specification.
-  * Multi-tier network isolation separating public-facing web subnets from private database subnets.
-  * Provisioning of GCP Compute Engine (`e2-micro`), Cloud SQL PostgreSQL (`db-f1-micro`), and Google Cloud Storage (GCS) assets.
-  * Secure firewall configuration and automated planning evaluation (`terraform plan`).
-* **Documentation:** Refer to [`dev-ops/InfraBlueprint/README.md`](./dev-ops/InfraBlueprint/README.md) for full architecture blueprints and deployment instructions.
-
-### 2. WatchTower (Logistics Observability & Monitoring Stack)
-* **Path:** [`dev-ops/WatchTower/`](./dev-ops/WatchTower/)
-* **Client / Scenario:** Reyla Logistics — Last-mile delivery backend microservices telemetry.
-* **Core Technical Scope:**
-  * Unified container orchestration using Docker Compose for three core services (`order-service`, `tracking-service`, `notification-service`).
-  * Time-series metrics collection and scraping configuration using **Prometheus** (15s scrape interval).
-  * Automated executive dashboard provisioning in **Grafana** (zero-touch file provisioning).
-  * Proactive alerting rules (`ServiceDown`, `HighErrorRate`, `ServiceNotScraping`) mapped in `prometheus/alerts.yml`.
-  * Stream processing and JSON-structured log aggregation.
-* **Documentation:** Refer to [`dev-ops/WatchTower/README.md`](./dev-ops/WatchTower/README.md) for complete setup instructions, alerting validation, and operational log commands.
+The portfolio demonstrates production-ready implementations across three core DevOps domains: Deployment Automation, Infrastructure as Code (IaC), and System Observability.
 
 ---
 
-## General Execution Guidelines
+##  Projects Directory
 
-To inspect, build, or test either project:
-1. Navigate into the specific challenge subdirectory (`cd dev-ops/InfraBlueprint` or `cd dev-ops/WatchTower`).
-2. Follow the step-by-step instructions outlined in that project's dedicated README.
+All DevOps challenges are located within the [`dev-ops/`](./dev-ops/) directory.
+
+### 1. [DeployReady](./dev-ops/DeployReady/)
+**Client:** Kora Analytics  
+**Focus:** Deployment Automation & Application Packaging  
+
+This module focuses on ensuring application code is reliably packaged, tested, and automated for deployment, establishing a deterministic release pipeline for Kora Analytics.
+*  **[View DeployReady Architecture & Docs](./dev-ops/DeployReady/README.md)**
+
+### 2. [InfraBlueprint](./dev-ops/InfraBlueprint/)
+**Client:** Vela Payments  
+**Focus:** Infrastructure as Code (Terraform) & Cloud Security  
+
+A highly secure, reproducible IaC implementation designed to replace manual cloud console configurations with deterministic automation.
+* **Network Isolation:** Strict multi-tier network segregation separating public-facing web subnets from private, isolated database subnets.
+* **Resource Provisioning:** Automated deployment of Google Cloud Platform (GCP) Compute Engine (`e2-micro`), Cloud SQL PostgreSQL (`db-f1-micro`), and Google Cloud Storage (GCS) assets.
+* **Security:** Configured firewall rules enforcing strict ingress constraints.
+*  **[View InfraBlueprint Architecture & Docs](./dev-ops/InfraBlueprint/README.md)**
+
+### 3. [WatchTower](./dev-ops/WatchTower/)
+**Client:** Reyla Logistics  
+**Focus:** Full-Stack Observability & Telemetry  
+
+A complete containerized observability stack built to monitor a multi-service logistics backend (`order-service`, `tracking-service`, `notification-service`).
+* **Metrics Ingestion:** **Prometheus** configured for active time-series metrics scraping (15s intervals).
+* **Automated Dashboards:** **Grafana** configured with zero-touch file provisioning to instantly load executive dashboards tracking HTTP throughput, 5xx error rates, and target health.
+* **Proactive Alerting:** Configured alert rules for `ServiceDown`, `HighErrorRate`, and `ServiceNotScraping`.
+* **Structured Logging:** Centralized, JSON-formatted container log streams.
+*  **[View WatchTower Architecture & Docs](./dev-ops/WatchTower/README.md)**
+
+---
+
+##  Execution & Verification
+
+To review the specific configurations, architectures, or execution steps for any project:
+1. Navigate into the specific project folder under the `dev-ops/` directory.
+2. Read the project-specific `README.md` for detailed build, test, and deployment instructions.
