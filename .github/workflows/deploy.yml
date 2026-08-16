@@ -8,6 +8,8 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
+  # Define the path to your app
+  APP_PATH: dev-ops/DeployReady
 
 jobs:
   build-and-deploy:
@@ -20,11 +22,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: List files to debug directory layout
-        run: ls -la
-
       - name: Run Tests
-        working-directory: ./app
+        working-directory: ${{ env.APP_PATH }}/app
         run: |
           npm ci
           npm test
@@ -39,7 +38,7 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: .
+          context: ${{ env.APP_PATH }}
           push: true
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
