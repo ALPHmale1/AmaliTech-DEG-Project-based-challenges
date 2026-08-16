@@ -8,7 +8,6 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
-  # Define the path to your app
   APP_PATH: dev-ops/DeployReady
 
 jobs:
@@ -25,7 +24,7 @@ jobs:
       - name: Run Tests
         working-directory: ${{ env.APP_PATH }}/app
         run: |
-          npm ci
+          npm install
           npm test
 
       - name: Log in to the Container registry
