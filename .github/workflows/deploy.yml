@@ -20,6 +20,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: List files to debug directory layout
+        run: ls -la
+
       - name: Run Tests
         working-directory: ./app
         run: |
