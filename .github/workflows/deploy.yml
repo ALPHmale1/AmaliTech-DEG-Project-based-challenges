@@ -46,7 +46,7 @@ jobs:
             ${{ env.REGISTRY }}/${{ steps.repo.outputs.NAME }}:${{ github.sha }}
             ${{ env.REGISTRY }}/${{ steps.repo.outputs.NAME }}:latest
 
-      - name: Deploy to Cloud Server
+      - name: Deploy, Verify Health, and Rollback
         uses: appleboy/ssh-action@v1.0.3
         env:
           REPO_NAME: ${{ steps.repo.outputs.NAME }}
@@ -60,7 +60,41 @@ jobs:
           envs: REPO_NAME, IMAGE_TAG, GH_ACTOR, GH_TOKEN
           script: |
             echo "$GH_TOKEN" | docker login ghcr.io -u $GH_ACTOR --password-stdin
+            
+            # 1. Capture the currently running image (for dynamic rollback)
+            OLD_IMAGE=$(docker inspect --format='{{.Config.Image}}' kora-api 2>/dev/null || echo "")
+            echo "Previous image detected as: $OLD_IMAGE"
+            
+            # 2. Deploy the newly built image
             docker pull ghcr.io/$REPO_NAME:$IMAGE_TAG
             docker stop kora-api || true
             docker rm kora-api || true
             docker run -d --name kora-api -p 80:3000 -e PORT=3000 --restart unless-stopped ghcr.io/$REPO_NAME:$IMAGE_TAG
+            
+            # 3. Pause for container initialization
+            echo "Waiting for container to initialize..."
+            sleep 15
+            
+            # 4. Execute HTTP Health Probe
+            HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:80/health || echo "000")
+            
+            # 5. Evaluate Health and Execute Rollback on Failure
+            if [ "$HTTP_STATUS" -ne 200 ]; then
+              echo "CRITICAL: Health check failed with HTTP status $HTTP_STATUS."
+              echo "Initiating automated rollback to previous stable state..."
+              
+              docker stop kora-api || true
+              docker rm kora-api || true
+              
+              if [ -n "$OLD_IMAGE" ]; then
+                docker run -d --name kora-api -p 80:3000 -e PORT=3000 --restart unless-stopped $OLD_IMAGE
+                echo "Rollback to $OLD_IMAGE complete."
+              else
+                echo "No previous image found. Container removed."
+              fi
+              
+              # Exit with code 1 to intentionally fail the GitHub Action step
+              exit 1
+            else
+              echo "Health check passed with HTTP status $HTTP_STATUS. Deployment successful."
+            fi
